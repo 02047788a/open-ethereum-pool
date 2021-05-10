@@ -1,0 +1,3 @@
+#!/bin/bash
+geth --classic --rpc --maxpeers 75 --syncmode "fast" --rpcapi "eth,net,web3,personal" --etherbase "YOUR_WALLET" --cache=12288 --mine --unlock "YOUR_WALLET" --allow-insecure-unlock --password /pool/pwd
+geth --rpc --rpcaddr 127.0.0.1 --rpcport 8545 --cache=1024 --datadir /media/data/eth-geth/ --rpcapi "eth,net,web3,debug,personal" --miner.notify 127.0.0.1:8888/notify  --miner.threads 0 --gcmode=archive --mine #--syncmode light
