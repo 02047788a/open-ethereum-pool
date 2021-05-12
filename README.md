@@ -14,16 +14,18 @@ Dependencies:
 
 #### Initial storage & folder
 ```bash
+### 安裝編譯工具 ###
 $ sudo apt-get update
 ​$ sudo apt-get dist-upgrade
 ​$ sudo apt-get install build-essential make
-###########################################3
+### 掛載大容量硬碟 ###
 $ sudo mkdir /mnt/ethpool
 $ sudo fdisk -l #find large storage (ex: /dev/nvme1n1)
 $ sudo mkfs -t ext4 /dev/nvme1n1 # foramt storage
 $ sudo mount /dev/nvme1n1 /mnt/ethpool
 $ #sudo umount /mnt/ethpool
 $ sudo chown -R $USER /mnt/ethpool
+### 建立geth目錄  ###
 $ mkdir /mnt/ethpool/.ethereum
 ```
 
@@ -65,7 +67,7 @@ $ sudo apt-get update​
 $ sudo apt-get install nodejs​
 $ sudo apt-get install npm
 ​$ nodejs -v​
-$ sudo ln -s /usr/bin/nodejs /usr/bin/node
+#sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
 #### 4. Install Geth
