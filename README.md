@@ -152,6 +152,32 @@ $ ./build.sh
    2. 找到 `ApiUrl: '//example.net/'`, 把 example.net 改成自己的domain。
    3. 找到 `HttpHost: 'http://example.net'`, 把 example.net 改成自己的domain。
    4. 找到 `StratumHost: 'example.net'`, 把 example.net 改成自己的domain。
+
+4. 設定nginx
+```bash
+$ sudo vim /etc/nginx/sites-available/ethpool
+$ sudo ln -s /etc/nginx/sites-available/ethpool /etc/nginx/sites-enabled
+$ sudo systemctl restart nginx
+$ sudo systemctl status nginx
+```
+
+***etc/nginx/sites-available/ethpool***
+```bash
+upstream api {     
+  server 127.0.0.1:8080; 
+} 
+
+server {     
+  listen 80;     
+  server_name {YOUR DOMAIN};     
+  root /mnt/ethpool/open-ethereum-pool/www/dist;     
+  location / {      
+  }     
+  location /api {         
+    proxy_pass http://api;     
+  } 
+}
+```
    
 #### 啟動礦池
 ```bash
