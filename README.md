@@ -148,7 +148,7 @@ $ ./build.sh
 ```
 
 3. 修改環境變數
-   1. 打開`www/config/environment.js`修改內容
+   1. 打開`open-ethereum-pool/www/config/environment.js`修改內容
    2. 找到 `ApiUrl: '//example.net/'`, 把 example.net 改成自己的domain。
    3. 找到 `HttpHost: 'http://example.net'`, 把 example.net 改成自己的domain。
    4. 找到 `StratumHost: 'example.net'`, 把 example.net 改成自己的domain。
