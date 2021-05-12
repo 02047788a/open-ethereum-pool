@@ -30,6 +30,12 @@ $ cd /mnt/ethpool
 $ mkdir .ethereum
 ```
 
+開機掛載
+***/etc/fstab***
+```bash
+/dev/nvme1n1     /mnt/ethpool  ext4    defaults    0    1
+```
+
 #### 1. Install Go
 ```bash
 $ wget https://golang.org/dl/go1.13.15.linux-amd64.tar.gz
@@ -75,6 +81,7 @@ $ sudo apt-get install npm
 
 ```bash
 $ wget https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.10.3-991384a7.tar.gz
+$ tar zxvf geth-linux-amd64-1.10.3-991384a7.tar.gz
 $ sudo mv geth-linux-amd64-1.10.3-991384a7/geth /usr/bin/
 ```
 > 儘量用最新版本
