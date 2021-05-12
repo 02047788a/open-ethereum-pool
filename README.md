@@ -17,7 +17,7 @@ Dependencies:
 ### 安裝編譯工具 ###
 $ sudo apt-get update
 ​$ sudo apt-get dist-upgrade
-​$ sudo apt-get install build-essential make
+​$ sudo apt-get install build-essential make unzip
 ### 掛載大容量硬碟 ###
 $ sudo mkdir /mnt/ethpool
 $ sudo fdisk -l #find large storage (ex: /dev/nvme1n1)
@@ -98,7 +98,7 @@ $ geth account list --datadir /mnt/ethpool/.ethereum
 
 ### 編譯 & 啟動礦池
 
-#### 編譯
+#### 取得專案
 ```bash
 $ cd /mnt/ethpool
 $ git clone https://github.com/02047788a/open-ethereum-pool.git
@@ -106,16 +106,58 @@ $ cd open-ethereum-pool/
 $ chmod +x ./build/env.sh
 $ make
 ```
+#### 編譯礦池 & 修正
 
-#### 修正編譯錯誤
+```bash
+$ cd /mnt/ethpool/open-ethereum-pool/
+$ chmod +x ./build/env.sh
+```
 
 1. 修改 util.go
-  1. 第11行 加入 `"github.com/ethereum/go-ethereum/common/hexutil"`
-  2. 第39行 發現 `return string(common.ToHex(diff1.Bytes())）` 修改 `return string(hexutil.Encode(diff1.Bytes())）`
+   1. 第11行 加入 `"github.com/ethereum/go-ethereum/common/hexutil"`
+   2. 第39行 發現 `return string(common.ToHex(diff1.Bytes())）` 修改 `return string(hexutil.Encode(diff1.Bytes())）`
   > 檔案路徑: build/_workspace/src/github.com/sammy007/open-ethereum-pool/util/util.go
 
 2. 修改 rpc.go
-  1. 第15行 發現 `"github.com/ethereum/go-ethereum/common"` 修改 `""github.com/ethereum/go-ethereum/common/hexutil"`
-  2. 第180行 發現 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, common.ToHex(hash[:])})` 修改 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, hexutil.Encode(hash[:])})`
+   1. 第15行 發現 `"github.com/ethereum/go-ethereum/common"` 修改 `""github.com/ethereum/go-ethereum/common/hexutil"`
+   2. 第180行 發現 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, common.ToHex(hash[:])})` 修改 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, hexutil.Encode(hash[:])})`
   > 檔案路徑: build/_workspace/src/github.com/sammy007/open-ethereum-pool/rpc/rpc.go
-3. 再次編譯 `make`
+3. 執行編譯 `make`
+
+
+#### 編譯前端 & 修正
+
+1. 安裝套件
+```bash
+$ cd /mnt/ethpool/open-ethereum-pool/www
+$ sudo npm install -g ember-cli@2.9.1
+$ sudo npm install -g bower
+$ npm install
+$ bower install
+$ ./build.sh
+```
+
+2. 修正前端啟動都是空白
+```bash
+$ cd /mnt/ethpool 
+$ wget https://github.com/sammy007/open-ethereum-pool/files/3618316/intl-format-cache.zip
+$ rm -rf open-ethereum-pool/www/node_modules/intl-format-cache/
+$ unzip intl-format-cache.zip -d open-ethereum-pool/www/node_modules/
+$ cd open-ethereum-pool/www
+$ ./build.sh
+```
+
+3. 修改環境變數
+   1. 打開`www/config/environment.js`修改內容
+   2. 找到 `ApiUrl: '//example.net/'`, 把 example.net 改成自己的domain。
+   3. 找到 `HttpHost: 'http://example.net'`, 把 example.net 改成自己的domain。
+   4. 找到 `StratumHost: 'example.net'`, 把 example.net 改成自己的domain。
+   
+#### 啟動礦池
+```bash
+$ cd /mnt/ethpool/open-ethereum-pool
+$ cp myconfig/pool-config.json ./config.json
+$ ./build/bin/open-ethereum-pool config.json
+```
+
+### 編譯 & 啟動礦池
