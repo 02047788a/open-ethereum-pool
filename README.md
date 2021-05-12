@@ -26,13 +26,14 @@ $ sudo mount /dev/nvme1n1 /mnt/ethpool
 $ #sudo umount /mnt/ethpool
 $ sudo chown -R $USER /mnt/ethpool
 ### 建立geth目錄  ###
-$ mkdir /mnt/ethpool/.ethereum
+$ cd /mnt/ethpool
+$ mkdir .ethereum
 ```
 
 #### 1. Install Go
 ```bash
 $ wget https://golang.org/dl/go1.13.15.linux-amd64.tar.gz
-$ tar zxvf  go1.13.15.linux-amd64.tar.gz
+$ tar zxvf go1.13.15.linux-amd64.tar.gz
 $ sudo mv go /usr/local
 $ vim ~/.profile       # .profile檔案內容在下方
 $ source ~/.profile
@@ -86,9 +87,35 @@ $ sudo apt-get -y install nginx
 
 ### Geth 建立錢包
 ```bash
-$ mkdir /mnt/ethpool/.ethereum
+$ cd /mnt/ethpool
+$ mkdir .ethereum
 $ geth account new --datadir /mnt/ethpool/.ethereum
 $ geth account list --datadir /mnt/ethpool/.ethereum
 ```
 
 > keystore path: /mnt/ethpool/.ethereum/keystore
+
+
+### 編譯 & 啟動礦池
+
+#### 編譯
+```bash
+$ cd /mnt/ethpool
+$ git clone https://github.com/02047788a/open-ethereum-pool.git
+$ cd open-ethereum-pool/
+$ chmod +x ./build/env.sh
+$ make
+```
+
+#### 修正編譯錯誤
+
+1. 修改 util.go
+  1. 第11行 加入 `"github.com/ethereum/go-ethereum/common/hexutil"`
+  2. 第39行 發現 `return string(common.ToHex(diff1.Bytes())）` 修改 `return string(hexutil.Encode(diff1.Bytes())）`
+  > 檔案路徑: build/_workspace/src/github.com/sammy007/open-ethereum-pool/util/util.go
+
+2. 修改 rpc.go
+  1. 第15行 發現 `"github.com/ethereum/go-ethereum/common"` 修改 `""github.com/ethereum/go-ethereum/common/hexutil"`
+  2. 第180行 發現 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, common.ToHex(hash[:])})` 修改 `rpcResp, err := r.doPost(r.Url, "eth_sign", []string{from, hexutil.Encode(hash[:])})`
+  > 檔案路徑: build/_workspace/src/github.com/sammy007/open-ethereum-pool/rpc/rpc.go
+3. 再次編譯 `make`
